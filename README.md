@@ -1,6 +1,8 @@
 # TicTacToe
 A game of Tic Tac Toe
 
+A simple game to learn github and start learning c++
+
 pretty self explanitory, just compile, run, and follow the onscreen instructions
 
 has singleplayer or two player mode
