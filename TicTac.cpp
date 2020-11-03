@@ -31,7 +31,7 @@ void rBoard()                                                       //resets the
 void move(char y)
 {
     int n;
-    bool empty = true;                                    //empty space flag
+    bool empty = true;                                     //is space empty space
 
 
     do
@@ -39,7 +39,7 @@ void move(char y)
         cout << "select square: ";
         cin >> n;
 
-        if (x[n - 1] != 'X' && x[n - 1] != 'O')                            //check is space empty
+        if (x[n - 1] != 'X' && x[n - 1] != 'O')               //check is space empty
         {
             x[n - 1] = y;
             empty = true;
@@ -48,48 +48,52 @@ void move(char y)
         {
             empty = false;
         }
-    } while (!empty);                                 //loop as long as chosen spot not empty
+    } while (!empty);                                       //loop as long as chosen spot not empty
 
     board();
 }
 
-bool checkWin(char b)                                        //checks if one side won
+int checkWin(char b, int turn)                                        //checks if one side won
 {
     if (x[0] == b && x[1] == b && x[2] == b)              //checks all wining scenarios
     {
-        return true;
+        return 1;
     }
     else if (x[3] == b && x[4] == b && x[5] == b )
     {
-        return true;
+        return 1;
     }
     else if (x[6] == b && x[7] == b && x[8] == b)
     {
-        return true;
+        return 1;
     }
     else if (x[0] == b && x[4] == b && x[8] == b)
     {
-        return true;
+        return 1;
     }
     else if (x[2] == b && x[4] == b && x[6] == b)
     {
-        return true;
+        return 1;
     }
     else if (x[0] == b && x[3] == b && x[6] == b)
     {
-        return true;
+        return 1;
     }
     else if (x[1] == b && x[4] == b && x[7] == b)
     {
-        return true;
+        return 1;
     }
     else if (x[2] == b && x[5] == b && x[8] == b)
     {
-        return true;
+        return 1;
     }
-    else
+    else if(turn >= 8)                                      //every move made, draw
     {
-        return false;
+        return 2;
+    }
+    else                                                    //no win yet
+    {
+        return 0;
     }
 }
 
@@ -111,8 +115,8 @@ void opponent()                                                 //randomly place
 int main()
 {
     
-    int s = 0;
-    bool winX = false, winO = false, play = true;
+    int winX = 0, winO = 0, turn = 0, s = 0;
+    bool play = true;
     char sPlayer, pAgain;
 
     cout << "single player (y/n): ";                        //select single player
@@ -128,8 +132,10 @@ int main()
 
             move('X');                                      //X moves
 
-            winX = checkWin('X');                           //did X win
-            if (winX)
+            turn++;
+
+            winX = checkWin('X',turn);                           //did X win
+            if (winX == 1)
             {
                 cout << "Xs win" << endl << "play again? (y/n): ";          //play again?
                 cin >> pAgain;
@@ -139,6 +145,7 @@ int main()
                     rBoard();                               //rest board
                     board();                                //reprint board
                     winX = false;                           //remove win flag
+                    turn = 0;
                 }
                 else                                        //dont play again
                 {
@@ -147,12 +154,32 @@ int main()
                 }
 
             }
+            else if (winX == 2)                             //game ends in draw
+            {
+                cout << "draw, no winner" << endl << "play again? (y/n): ";
+                cin >> pAgain;
+
+                if (pAgain == 'y' || pAgain == 'Y')         //play again
+                {
+                    rBoard();
+                    board();
+                    turn = 0;
+                }
+                else                                        //dont play again
+                {
+                    play = false;
+                    break;
+                }
+            }
 
 
             opponent();                                 //opponent moves
+
+            turn++;
+
             board();                                    //print oponents move
-            winO = checkWin('O');                       //checks is opponent won
-            if (winO)
+            winO = checkWin('O',turn);                       //checks is opponent won
+            if (winO == 1)
             {
                 cout << "Os win" << endl << "play again? (y/n): ";
                 cin >> pAgain;
@@ -162,6 +189,7 @@ int main()
                     rBoard();                           //restes to play again
                     board();
                     winO = false;                       //resets win flag
+                    turn = 0;
                 }
                 else                                    //leave game
                 {
@@ -169,6 +197,23 @@ int main()
                     break;
                 }
 
+            }
+            else if (winO == 2)
+            {
+                cout << "draw, no winner" << endl << "play again? (y/n): ";
+                cin >> pAgain;
+
+                if (pAgain == 'y' || pAgain == 'Y')         //play again
+                {
+                    rBoard();
+                    board();
+                    turn = 0;
+                }
+                else                                        //dont play again
+                {
+                    play = false;
+                    break;
+                }
             }
         }
     }
@@ -180,9 +225,11 @@ int main()
         {
             move('X');                                      //X moves
 
-            winX = checkWin('X');                           //did X win
+            turn++;
 
-            if (winX)
+            winX = checkWin('X',turn);                           //did X win
+
+            if (winX == 1)
             {
                 cout << "Xs win" << endl << "play again (y/n): ";
                 cin >> pAgain;
@@ -198,12 +245,31 @@ int main()
                     break;
                 }
             }
+            else if (winX == 2)
+            {
+                cout << "draw, no winner" << endl << "play again? (y/n): ";
+                cin >> pAgain;
+
+                if (pAgain == 'y' || pAgain == 'Y')         //play again
+                {
+                    rBoard();
+                    board();
+                    turn = 0;
+                }
+                else                                        //dont play again
+                {
+                    play = false;
+                    break;
+                }
+            }
 
             move('O');                                      //O moves
 
-            winO = checkWin('O');                           //did O win
+            turn++;
 
-            if (winO)
+            winO = checkWin('O',turn);                           //did O win
+
+            if (winO == 1)
             {
                 cout << "Os win" << endl << "play again (y/n): ";
                 cin >> pAgain;
@@ -216,6 +282,23 @@ int main()
                 }
                 else                                        //leave the game
                 {
+                    break;
+                }
+            }
+            else if (winO == 2)
+            {
+                cout << "draw, no winner" << endl << "play again? (y/n): ";
+                cin >> pAgain;
+
+                if (pAgain == 'y' || pAgain == 'Y')         //play again
+                {
+                    rBoard();
+                    board();
+                    turn = 0;
+                }
+                else                                        //dont play again
+                {
+                    play = false;
                     break;
                 }
             }
